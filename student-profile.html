@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #0078D4;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+#submit-fee-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #0078D4;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#submit-fee-btn:hover {
+  background-color: #005bb5;
+}
+
+.profile-container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  margin-bottom: 10px;
+  color: #0078D4;
+  border-bottom: 2px solid #0078D4;
+  padding-bottom: 5px;
+}
+
+.section p {
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+.photo-container {
+  text-align: center;
+}
+
+.photo-container img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  border: 2px solid #0078D4;
+  margin-bottom: 10px;
+}
+
+.photo-containerer img {
+  width: 300px;
+  height: 180px;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: 2px solid #0078D4;
+  display: block;
+  margin-left: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #0078D4;
+  color: white;
+}
+
+/* Popup Styles */
+#fee-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+#fee-popup h2 {
+  margin-bottom: 10px;
+}
+
+#fee-popup input, #fee-popup select, #fee-popup textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#fee-popup button {
+  background-color: #0078D4;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#fee-popup button:hover {
+  background-color: #005bb5;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+    /* Loader Popup */
+    #loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #loader-overlay img {
+      max-width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loader-text {
+      margin-top: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  #submit-fee-btn {
+    top: 10px;
+    right: 10px;
+    padding: 8px 10px;
+  }
+
+  .profile-container {
+    padding: 15px;
+  }
+
+  .photo-container img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .photo-containerer img {
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+  }
+
+  table, th, td {
+    font-size: 14px;
+  }
+
+  #fee-popup {
+    width: 90%;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  #submit-fee-btn {
+    padding: 6px 8px;
+  }
+
+  .photo-container img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .photo-containerer img {
+    width: 100%;
+  }
+
+  th, td {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div id="loader-overlay">
+  <img src="logo.png" alt="Loading Logo">
+  <div class="loader"></div>
+  <div id="loader-text"></div>
+</div>
+
+
+  <h1>Student Profile <button id="submit-fee-btn">Submit Fee</button></h1>
+  <div class="profile-container" id="student-profile">
+    <!-- Profile sections will be dynamically populated -->
+  </div>
+
+  <h3>Fee Records</h3>
+  <table id="fee-records">
+    <thead>
+      <tr>
+        <th>Fee For</th>
+        <th>Amount</th>
+        <th>Payer Name</th>
+        <th>Remarks</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Fee Popup -->
+  <div id="overlay"></div>
+  <div id="fee-popup">
+    <h2>Submit Fee</h2>
+    <form id="fee-form">
+      <select id="fee-for" required>
+        <option value="" disabled selected>Select Fee For</option>
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <!-- Add all months -->
+      </select>
+      <input type="number" id="amount" placeholder="Amount" required>
+      <input type="text" id="payer-name" placeholder="Payer Name" required>
+      <textarea id="remarks" placeholder="Remarks"></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { db, doc, getDoc, collection, getDocs, addDoc } from '../scripts/firebase-config.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id');
+    const profileContainer = document.getElementById('student-profile');
+    const feeRecordsTable = document.getElementById('fee-records').querySelector('tbody');
+    const feePopup = document.getElementById('fee-popup');
+    const overlay = document.getElementById('overlay');
+    const submitFeeBtn = document.getElementById('submit-fee-btn');
+    const feeForm = document.getElementById('fee-form');
+///loader animations 
+function showLoader(message) {
+  document.getElementById('loader-overlay').style.display = 'flex';
+  document.getElementById('loader-text').textContent = message;
+}
+
+function hideLoader() {
+  document.getElementById('loader-overlay').style.display = 'none';
+}
+//over
+
+    async function fetchStudentDetails() {
+  try {
+    showLoader('Loading student profile...');
+    const studentDoc = await getDoc(doc(db, 'students', studentId));
+    const student = studentDoc.data();
+    profileContainer.innerHTML = `
+      <div class="photo-container">
+        <img src="${student.studentPhotoURL}" alt="Student Photo">
+        <h2>${student.name}</h2>
+      </div>
+      <div class="section">
+        <h3>Basic Information</h3>
+        <p><strong>UID:</strong> ${studentId}</p>
+        <p><strong>Class:</strong> ${student.class}</p>
+        <p><strong>Date of Birth:</strong> ${student.dob}</p>
+        <p><strong>Gender:</strong> ${student.gender}</p>
+        <p><strong>Category:</strong> ${student.category}</p>
+        <p><strong>Admission Date:</strong> ${student.admissionDate}</p>
+      </div>
+      <div class="section">
+        <h3>Parent Details</h3>
+        <p><strong>Mother's Name:</strong> ${student.motherName}</p>
+        <p><strong>Father's Name:</strong> ${student.fatherName}</p>
+      </div>
+      <div class="section">
+        <h3>Contact Information</h3>
+        <p><strong>Address:</strong> ${student.address}</p>
+        <p><strong>PIN Code:</strong> ${student.pincode}</p>
+        <p><strong>Guardian's Contact:</strong> ${student.guardianContact}</p>
+      </div>
+      <div class="section">
+        <h3>Documents</h3>
+        <div class="photo-containerer">
+          <span id="aadhar-number"><strong>Aadhar Number:</strong> ${student.aadhar}</span>
+          <img id="aadhar-photo" src="${student.aadharPhotoURL}" alt="Aadhar Photo">
+        </div>
+      </div>`;
+  } catch (error) {
+    console.error('Error fetching student details:', error);
+  } finally {
+    hideLoader();
+  }
+}
+
+async function fetchFeeRecords() {
+  try {
+    showLoader('Loading fee records...');
+    const feesSnapshot = await getDocs(collection(db, `students/${studentId}/fees`));
+    feesSnapshot.forEach((doc) => {
+      const fee = doc.data();
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${fee.feeFor}</td><td>${fee.amount}</td><td>${fee.payerName}</td><td>${fee.remarks}</td><td>${fee.date}</td>`;
+      feeRecordsTable.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error fetching fee records:', error);
+  } finally {
+    hideLoader();
+  }
+}
+
+    submitFeeBtn.addEventListener('click', () => {
+      feePopup.style.display = 'block';
+      overlay.style.display = 'block';
+    });
+
+    overlay.addEventListener('click', () => {
+      feePopup.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    feeForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    showLoader('Submitting fee...');
+    const feeData = {
+      feeFor: document.getElementById('fee-for').value,
+      amount: document.getElementById('amount').value,
+      payerName: document.getElementById('payer-name').value,
+      remarks: document.getElementById('remarks').value,
+      date: new Date().toLocaleString(),
+    };
+    await addDoc(collection(db, `students/${studentId}/fees`), feeData);
+    alert('Fee submitted successfully!');
+  } catch (error) {
+    console.error('Error submitting fee:', error);
+  } finally {
+    hideLoader();
+    location.reload();
+  }
+});
+    fetchStudentDetails();
+    fetchFeeRecords();
+  </script>
+</body>
+</html>

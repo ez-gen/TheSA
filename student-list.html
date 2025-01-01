@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholar's Academy - Student List</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      background-color: #0078D4;
+      color: white;
+      padding: 20px;
+      margin: 0;
+    }
+    #add-student-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #add-student-btn:hover {
+      background-color: #218838;
+    }
+
+    /* Loader Popup */
+    #loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #loader-overlay img {
+      max-width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loader-text {
+      margin-top: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    /* Search Bar */
+    .search-container {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: center;
+    }
+    #search-input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    /* Table Styles */
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #0078D4;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    button.action-btn {
+      padding: 5px 10px;
+      font-size: 14px;
+      color: #fff;
+      background-color: #0078D4;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button.action-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* No Students Message */
+    .no-students {
+      text-align: center;
+      color: red;
+      font-size: 18px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="class-name">Class Name</h1>
+  <div class="search-container">
+    <input id="search-input" type="text" placeholder="Search by student name or father's name...">
+  </div>
+  <button id="add-student-btn">Add New Student</button>
+
+  <!-- Loader Popup -->
+  <div id="loader-overlay">
+    <img src="logo.png" alt="Loading Logo">
+    <div class="loader"></div>
+    <div id="loader-text">Loading students.....</div>
+  </div>
+  
+  <table id="student-table" style="display: none;">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Father's Name</th>
+        <th>Class</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Students will be dynamically populated -->
+    </tbody>
+  </table>
+  <p id="no-students-msg" class="no-students" style="display: none;">No students found for this class.</p>
+
+  <script type="module">
+    import { db, collection, getDocs } from '../scripts/firebase-config.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const className = params.get('class');
+    document.getElementById('class-name').textContent = `Students List: ${className}`;
+
+    const studentTable = document.getElementById('student-table');
+    const noStudentsMsg = document.getElementById('no-students-msg');
+    const searchInput = document.getElementById('search-input');
+    const loaderOverlay = document.getElementById('loader-overlay');
+
+    let students = [];
+
+    async function fetchStudents() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'students'));
+        const studentTableBody = studentTable.querySelector('tbody');
+        studentTableBody.innerHTML = '';
+        students = [];
+        let studentsFound = false;
+
+        querySnapshot.forEach((doc) => {
+          const student = doc.data();
+          if (student.class === className) {
+            studentsFound = true;
+            students.push({ id: doc.id, ...student });
+          }
+        });
+
+        displayStudents(students);
+
+        if (!studentsFound) {
+          studentTable.style.display = 'none';
+          noStudentsMsg.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error fetching students:', error);
+        noStudentsMsg.textContent = 'An error occurred while loading students.';
+        noStudentsMsg.style.display = 'block';
+      } finally {
+        loaderOverlay.style.display = 'none';
+      }
+    }
+    
+    //loader flex
+    loaderOverlay.style.display = "flex";
+
+    function displayStudents(studentsList) {
+      const studentTableBody = studentTable.querySelector('tbody');
+      studentTableBody.innerHTML = '';
+
+      if (studentsList.length === 0) {
+        studentTable.style.display = 'none';
+        noStudentsMsg.style.display = 'block';
+      } else {
+        noStudentsMsg.style.display = 'none';
+        studentTable.style.display = 'table';
+
+        studentsList.forEach((student) => {
+          const row = document.createElement('tr');
+          const button = document.createElement('button');
+          button.textContent = 'View Profile';
+          button.classList.add('action-btn');
+          button.addEventListener('click', () => {
+            window.location.href = `student-profile.html?id=${student.id}`;
+          });
+
+          row.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.fatherName}</td>
+            <td>${student.class}</td>
+          `;
+          const actionCell = document.createElement('td');
+          actionCell.appendChild(button);
+          row.appendChild(actionCell);
+          studentTableBody.appendChild(row);
+        });
+      }
+    }
+
+    searchInput.addEventListener('input', () => {
+      const searchValue = searchInput.value.toLowerCase();
+      const filteredStudents = students.filter(student =>
+        student.name.toLowerCase().includes(searchValue) ||
+        student.fatherName.toLowerCase().includes(searchValue)
+      );
+      displayStudents(filteredStudents);
+    });
+
+    // Redirect to Add Student Page
+    document.getElementById('add-student-btn').addEventListener('click', () => {
+      window.location.href = `add-student.html?class=${className}`;
+    });
+
+    // Initial data fetch
+    fetchStudents();
+  </script>
+</body>
+</html>

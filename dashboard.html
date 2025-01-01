@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholar's Academy - Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      background-color: #0078D4;
+      color: white;
+      margin: 0;
+      padding: 20px 0;
+    }
+    .class-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+    }
+    .class-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .class-list li {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 10px 0;
+      padding: 15px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .class-list li:hover {
+      background: #0078D4;
+      color: white;
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+  <h1>Class Dashboard</h1>
+  <div class="class-list">
+    <ul>
+      <li onclick="navigateToClass('Nursery')">Nursery</li>
+      <li onclick="navigateToClass('L.K.G.')">L.K.G.</li>
+      <li onclick="navigateToClass('U.K.G.')">U.K.G.</li>
+      <li onclick="navigateToClass('1st')">1st</li>
+      <li onclick="navigateToClass('2nd')">2nd</li>
+      <li onclick="navigateToClass('3rd')">3rd</li>
+      <li onclick="navigateToClass('4th')">4th</li>
+      <li onclick="navigateToClass('5th')">5th</li>
+      <li onclick="navigateToClass('6th')">6th</li>
+      <li onclick="navigateToClass('7th')">7th</li>
+      <li onclick="navigateToClass('8th')">8th</li>
+      <li onclick="navigateToClass('9th')">9th</li>
+      <li onclick="navigateToClass('10th')">10th</li>
+    </ul>
+  </div>
+  <script>
+    function navigateToClass(className) {
+      const classPage = `student-list.html?class=${encodeURIComponent(className)}`;
+      window.location.href = classPage;
+    }
+    
+  </script>
+</body>
+</html>
